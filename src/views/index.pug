@@ -5,4 +5,29 @@ html
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
         title Lab2
     body 
-        h1 Web2 - Projekt 2 - Sigurnost
+        h1 Web2 - Drugi projekt - Sigurnost
+        hr
+
+        h2 Cross-site scripting (XSS) - reflektirani
+
+        p <b>Upute:</b> Tražilica vraća upisani pojam natrag u stranicu. Kada je ranjivost uključena, pojam se ne provjerava pa se umetnuta skripta izvrši. Ranjivost uključujete i isključujete prekidačem ispod.
+        p <b>Scenarij napada:</b> Pretpostavite da vam je napadač u poruci poslao #[a(href="/search?input=<script>alert(document.cookie)</script>") link] i da ste ga otvorili. Alertom će se prikazati vaši kolačići. Istu skriptu možete i sami upisati u polje za pretragu.
+               
+        form(action="/xss", method="POST")
+            input(type="checkbox" id="xssEnabled" name="xssEnabled" checked=xssEnabled onchange="this.form.submit()")
+            label(for="xssEnabled") Ranjivost uključena 
+        
+        p Pretraži hrvatske gradove (npr. „za” → Zagreb, Zadar)
+        form(action="/search", method="GET")
+            input(type="text" name="input")
+            input(type="submit" value="Pretraži")
+        
+        if query
+            if xssEnabled
+                p Rezultati za: !{query}
+            else 
+                p Rezultati za: #{query}
+            ul 
+                each city in results
+                    li #{city}
+
