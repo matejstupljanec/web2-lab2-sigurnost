@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.set("views", path.join(import.meta.dirname, "views"));
 app.set("view engine", "pug");
 
-auth.initCookieAuth(app, "/login");
+auth.initCookieAuth(app);
 
 const externalUrl = process.env.RENDER_EXTERNAL_URL;
 const port =
@@ -20,7 +20,7 @@ const port =
 const baseURL = externalUrl || `http://localhost:${port}`;
 const hostname = externalUrl ? "0.0.0.0" : "localhost";
 
-app.get("/", async (req, res) => {
+app.get("/", (req, res) => {
   res.cookie("session", crypto.randomUUID());
   const xssEnabled = req.cookies?.xssEnabled === "true";
   const bacEnabled = req.cookies?.bacEnabled === "true";
@@ -36,7 +36,7 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/search", async (req, res) => {
+app.get("/search", (req, res) => {
   const xssEnabled = req.cookies?.xssEnabled === "true";
   const bacEnabled = req.cookies?.bacEnabled === "true";
 
@@ -63,16 +63,14 @@ app.get("/search", async (req, res) => {
   });
 });
 
-app.post("/xss", async (req, res) => {
-  const xssEnabled: unknown = req.body?.xssEnabled;
-  res.cookie("xssEnabled", xssEnabled === "on");
+app.post("/xss", (req, res) => {
+  res.cookie("xssEnabled", req.body?.xssEnabled === "on");
 
   res.redirect("/");
 });
 
-app.post("/bac", async (req, res) => {
-  const bacEnabled: unknown = req.body?.bacEnabled;
-  res.cookie("bacEnabled", bacEnabled === "on");
+app.post("/bac", (req, res) => {
+  res.cookie("bacEnabled", req.body?.bacEnabled === "on");
 
   res.redirect("/");
 });
@@ -80,7 +78,7 @@ app.post("/bac", async (req, res) => {
 app.get<{ id: string }>(
   "/profile/:id",
   auth.requiresAuthentication,
-  async (req, res) => {
+  (req, res) => {
     const userId = Number(req.params.id);
     const user = users.find((u) => u.id === userId);
     if (!user) {

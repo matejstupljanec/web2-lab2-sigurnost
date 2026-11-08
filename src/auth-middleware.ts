@@ -1,7 +1,5 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
-dotenv.config();
 
 type User = {
   username: string;
@@ -23,9 +21,7 @@ declare global {
   }
 }
 
-var _loginUrl: string;
-function initCookieAuth(app: Express, loginUrl: string) {
-  _loginUrl = loginUrl;
+function initCookieAuth(app: Express) {
   app.use(cookieParser(process.env.COOKIE_KEY));
   app.use(setUserInfo);
 }
@@ -57,11 +53,7 @@ function requiresAuthentication(
   next: NextFunction,
 ) {
   if (req.user) next();
-  else
-    res.redirect(
-      302,
-      `${_loginUrl}?returnUrl=${encodeURIComponent(req.originalUrl)}`,
-    );
+  else res.redirect("/login");
 }
 
 export { initCookieAuth, signInUser, signOutUser, requiresAuthentication };
