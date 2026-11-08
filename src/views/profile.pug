@@ -1,0 +1,14 @@
+doctype html
+html     
+    head
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        title Profil
+    body 
+        h2 Korisnički profil
+        div
+            p Ime: #{user.username}
+            p OIB: #{user.oib}
+            p Nacionalnost: #{user.nationality}
+            p IBAN: #{user.iban}
+
+        a(href="/") Natrag

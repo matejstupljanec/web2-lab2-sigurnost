@@ -1,7 +1,6 @@
 doctype html
 html     
     head
-        link(rel="stylesheet", href="/css/index.css")
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
         title Lab2
     body 
@@ -30,4 +29,30 @@ html
             ul 
                 each city in results
                     li #{city}
+        
+        hr
+
+        h2 Loša kontrola pristupa (Broken Access Control)
+
+        p <b>Upute:</b> Za testiranje ove funkcionalnosti treba se prijaviti s jednim od dolje navedenih postojećih korisnika. Kad je ranjivost upaljena, u URL-u je moguće promijeniti ID korisnika za koji se profil prikazuje te na taj način doći do tuđih korisničkih podataka. Kad je ranjivost ugašena, takva akcija rezultirat će 403 Forbidden statusom.
+        p Postojeći korisnici:
+        ul
+            li ID: 1; username: Karla; password: karla123
+            li ID: 2; username: Ivan; password: ivan123
+
+        form(action="/bac", method="POST")
+            input(type="checkbox" id="bacEnabled" name="bacEnabled" checked=bacEnabled onchange="this.form.submit()")
+            label(for="bacEnabled") Ranjivost uključena 
+        
+        if user
+            p Prijavljeni ste kao <b>#{user.username}</b>
+            p
+                a(href="/profile/" + user.id) Moj profil
+            p
+                a(href="/profile/" + otherUser.id) Tuđi profil
+            form(action="/logout", method="POST")
+                input(type="submit" value="Odjava")
+        else 
+            p
+                a(href="/login") Prijava
 
