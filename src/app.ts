@@ -81,15 +81,18 @@ app.get<{ id: string }>(
   (req, res) => {
     const userId = Number(req.params.id);
     const user = users.find((u) => u.id === userId);
+
+    const bacEnabled = req.cookies?.bacEnabled === "true";
+    if (!bacEnabled && req.user?.username !== user?.username) {
+      res.sendStatus(403);
+      return;
+    }
+
     if (!user) {
       res.sendStatus(404);
       return;
     }
-    const bacEnabled = req.cookies?.bacEnabled === "true";
-    if (!bacEnabled && req.user?.username !== user.username) {
-      res.sendStatus(403);
-      return;
-    }
+
     res.render("profile", { user });
   },
 );
